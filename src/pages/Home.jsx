@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -13,9 +12,3 @@ function Home() {
 }
 
 export default Home;
-
-// useEffect(() => {
-//     fetch("http://localhost:8000")
-//         .then((res) => res.json())
-//         .then(console.log);
-// }, []);
