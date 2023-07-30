@@ -121,10 +121,10 @@ export function useWebRTC() {
             peersRef.current.find((p) => p.peerID === user),
             peersRef.current.filter((p) => p.peerID !== user),
         ];
+        leavingPeer?.peer?.destroy();
         peersRef.current = remainingPeers;
         setPeers([...peersRef.current]);
 
-        leavingPeer.peer.destroy();
     }
 
     return {
