@@ -1,11 +1,7 @@
-import * as process from "process";
-window.global = window;
-window.process = process;
-
 import { io } from "socket.io-client";
 
-// "localhost:8000"
-const socket = io("https://webrtc-app-server.onrender.com", {
+// const socket = io("webrtc-app-server.onrender.com", {
+const socket = io("http://localhost:8000", {
     autoConnect: false,
 });
 
