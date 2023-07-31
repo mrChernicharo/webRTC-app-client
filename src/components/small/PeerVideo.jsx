@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import TurnedOffCamSplash from "./TurnedOffCamSplash";
 import { videoConstraints } from "../../useWebRTC";
+import TurnedOffAudioSplash from "./TurnedOffAudioSplash";
 
 const { width, height } = videoConstraints;
 
@@ -21,8 +22,8 @@ function PeerVideo({ peerID, video, audio, peer }) {
     }, []);
 
     useEffect(() => {
-        console.log("PeerVideo", { video });
-    }, [video]);
+        console.log("PeerVideo", { audio });
+    }, [audio]);
 
     return (
         <div>
@@ -31,10 +32,11 @@ function PeerVideo({ peerID, video, audio, peer }) {
             {loading && <div>loading...</div>}
 
             <div style={{ display: video ? "block" : "none" }}>
-                <video playsInline autoPlay ref={ref} width={width} height={height} />
+                <video playsInline autoPlay={audio} muted={!audio} ref={ref} width={width} height={height} />
             </div>
 
             {!video && <TurnedOffCamSplash />}
+            {!audio && <TurnedOffAudioSplash />}
         </div>
     );
 }

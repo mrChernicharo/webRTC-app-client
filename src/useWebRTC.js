@@ -11,6 +11,7 @@ export function useWebRTC() {
     const [peers, setPeers] = useState([]);
     const [stream, setStream] = useState(undefined);
     const [videoOn, setVideoOn] = useState(false);
+    const [audioOn, setAudioOn] = useState(false);
     const userVideo = useRef();
     const peersRef = useRef([]);
     const roomID = location.pathname.replace("/room/", "");
@@ -74,9 +75,30 @@ export function useWebRTC() {
         setPeers((p) => [...peersRef.current]);
     }
 
+    function onAudioOn(id) {
+        console.log("SERVER:audio-on", id);
+
+        const selectedPeer = peersRef.current.find((p) => p.peerID === id);
+        if (selectedPeer) selectedPeer.audio = true;
+        console.log({ selectedPeer });
+
+        setPeers((p) => [...peersRef.current]);
+    }
+
+    function onAudioOff(id) {
+        console.log("SERVER:audio-off", id);
+
+        const selectedPeer = peersRef.current.find((p) => p.peerID === id);
+        if (selectedPeer) selectedPeer.audio = false;
+        console.log({ selectedPeer });
+
+        setPeers((p) => [...peersRef.current]);
+    }
+
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream) => {
             setVideoOn(true);
+            setAudioOn(true);
             setStream(stream);
         });
     }, []);
@@ -89,6 +111,8 @@ export function useWebRTC() {
 
             socket.on("video-on", onVideoOn);
             socket.on("video-off", onVideoOff);
+            socket.on("audio-on", onAudioOn);
+            socket.on("audio-off", onAudioOff);
 
             socket.on("all users", onAllUsers);
 
@@ -102,7 +126,9 @@ export function useWebRTC() {
         return () => {
             if (stream) {
                 socket.off("video-ff", onVideoOn);
-                socket.off("video-offf", onVideoOff);
+                socket.off("video-off", onVideoOff);
+                socket.off("audio-on", onAudioOn);
+                socket.off("audio-off", onAudioOff);
 
                 socket.off("all users", onAllUsers);
 
@@ -187,6 +213,8 @@ export function useWebRTC() {
         peers,
         userVideo,
         videoOn,
+        audioOn,
         setVideoOn,
+        setAudioOn,
     };
 }

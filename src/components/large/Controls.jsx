@@ -1,11 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { FaBeer, FaVideo, FaVideoSlash } from "react-icons/fa";
+import {
+    FaBeer,
+    FaFileAudio,
+    FaMicrophone,
+    FaMicrophoneAlt,
+    FaMicrophoneSlash,
+    FaRegFileAudio,
+    FaVideo,
+    FaVideoSlash,
+} from "react-icons/fa";
 import { socket } from "../../socket";
 import { UserContext } from "../../UserContext";
 
 function Controls({ onChange }) {
     const [videoOff, setVideoOff] = useState(false);
-    const [mute, setMute] = useState(false);
+    const [audioOff, setAudioOff] = useState(false);
     const { id } = useContext(UserContext);
     const roomID = location.pathname.replace("/room/", "");
 
@@ -15,9 +24,6 @@ function Controls({ onChange }) {
         <div className="controls">
             <button
                 onClick={() => {
-                    // myVideoRef.current.paused ? myVideoRef.current.play() : myVideoRef.current.pause();
-                    // myVideoRef.current.style.display = myVideoRef.current.paused ? "none" : "block";
-                    // setVideoHidden(!videoHidden);
                     if (videoOff) {
                         socket.emit("set-video-on", roomID, id);
                         onChange({ video: "on" });
@@ -29,12 +35,35 @@ function Controls({ onChange }) {
                 }}
             >
                 {videoOff ? (
-                    <span>
-                        Turn Camera On <FaVideo />
+                    <span className="">
+                        <FaVideo />
                     </span>
                 ) : (
-                    <span>
-                        Turn Camera Off <FaVideoSlash />
+                    <span className="text-red-500">
+                        <FaVideoSlash />
+                    </span>
+                )}
+            </button>
+
+            <button
+                onClick={() => {
+                    if (audioOff) {
+                        socket.emit("set-audio-on", roomID, id);
+                        onChange({ audio: "on" });
+                    } else {
+                        socket.emit("set-audio-off", roomID, id);
+                        onChange({ audio: "off" });
+                    }
+                    setAudioOff((prev) => !prev);
+                }}
+            >
+                {audioOff ? (
+                    <span className="">
+                        <FaMicrophone />
+                    </span>
+                ) : (
+                    <span className="text-red-500">
+                        <FaMicrophoneSlash />
                     </span>
                 )}
             </button>
