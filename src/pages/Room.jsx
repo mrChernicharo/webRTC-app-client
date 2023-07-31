@@ -4,24 +4,44 @@ import { useWebRTC } from "../useWebRTC";
 import { UserContext } from "../UserContext";
 import Chat from "../components/large/Chat";
 import Controls from "../components/large/Controls";
+import TurnedOffCamSplash from "../components/small/TurnedOffCamSplash";
 
 const Room = () => {
     const { id } = useContext(UserContext);
-    const { peers, userVideo } = useWebRTC();
+    const { peers, userVideo, videoOn, setVideoOn } = useWebRTC();
 
     return (
         <div>
             <div>
                 <div>{id}</div>
-                <video muted ref={userVideo} autoPlay playsInline />
-                {peers.map((peer, index) => {
-                    return <PeerVideo key={index} peer={peer} />;
+
+                <div style={{ display: videoOn ? "block" : "none" }}>
+                    <video muted ref={userVideo} autoPlay playsInline />
+                </div>
+
+                {!videoOn && <TurnedOffCamSplash />}
+
+                {peers.map((p, index) => {
+                    return <PeerVideo key={index} peerID={p.peerID} peer={p.peer} video={p.video} audio={p.audio} />;
                 })}
             </div>
 
             <Chat />
 
-            {/* <Controls myVideoRef={userVideo} videoHidden={videoHidden} setVideoHidden={setVideoHidden} /> */}
+            <Controls
+                onChange={(change) => {
+                    if (change.video) {
+                        if (change.video === "on") {
+                            userVideo.current.play();
+                            setVideoOn(true);
+                        }
+                        if (change.video === "off") {
+                            userVideo.current.pause();
+                            setVideoOn(false);
+                        }
+                    }
+                }}
+            />
         </div>
     );
 };
