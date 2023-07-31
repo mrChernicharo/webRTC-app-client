@@ -15,14 +15,13 @@ export function useWebRTC() {
     const roomID = location.pathname.replace("/room/", "");
 
     function onAllUsers(users) {
-        const peers = [];
-        users.forEach((userID) => {
-            const peer = createPeer(userID, socket.id, stream);
-            peersRef.current.push(peer);
-            peers.push(peer);
+        const peers = users.map((userID) => {
+            const peerObject = createPeer(userID, socket.id, stream);
+            return peerObject;
         });
 
         console.log("SERVER: all users", { users, peers });
+        peersRef.current = peers;
         setPeers(peers);
     }
 
@@ -51,6 +50,7 @@ export function useWebRTC() {
 
         const remainingPeers = destroyPeer(user, remainingUsers, stream);
 
+        peersRef.current = remainingPeers;
         setPeers(remainingPeers);
     }
 
@@ -66,7 +66,7 @@ export function useWebRTC() {
 
             socket.emit("join room", roomID);
 
-            socket.on("all users",onAllUsers);
+            socket.on("all users", onAllUsers);
 
             socket.on("user joined", onUserJoined);
 
@@ -77,7 +77,7 @@ export function useWebRTC() {
 
         return () => {
             if (stream) {
-                socket.off("all users",onAllUsers);
+                socket.off("all users", onAllUsers);
 
                 socket.off("user joined", onUserJoined);
 
@@ -85,7 +85,7 @@ export function useWebRTC() {
 
                 socket.off("user left", onUserLeft);
 
-                setStream(undefined)
+                setStream(undefined);
             }
         };
     }, [stream]);
@@ -93,6 +93,10 @@ export function useWebRTC() {
     useEffect(() => {
         console.log({ peers });
     }, [peers]);
+
+    useEffect(() => {
+        console.log({ stream });
+    }, [stream]);
 
     function createPeer(userToSignal, callerID, stream) {
         const peerObject = {
@@ -124,11 +128,6 @@ export function useWebRTC() {
         };
 
         peerObject.peer.on("signal", (signal) => {
-            console.log("SERVER: signal", {
-                signalType: signal.type,
-                incomingSignalType: incomingSignal.type,
-                callerID,
-            });
             socket.emit("returning signal", { signal, callerID });
         });
 
@@ -145,7 +144,6 @@ export function useWebRTC() {
             peersRef.current.filter((p) => p.peerID !== user),
         ];
         leavingPeer?.peer?.destroy();
-        peersRef.current = remainingPeers;
 
         return remainingPeers;
     }
