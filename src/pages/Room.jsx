@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import PeerVideo from "../components/PeerVideo";
+import PeerVideo from "../components/small/PeerVideo";
 import { useWebRTC } from "../useWebRTC";
 import { UserContext } from "../UserContext";
-import Chat from "../components/Chat";
+import Chat from "../components/large/Chat";
+import Controls from "../components/large/Controls";
 
 const Room = () => {
     const { id } = useContext(UserContext);
@@ -12,15 +13,15 @@ const Room = () => {
         <div>
             <div>
                 <div>{id}</div>
-                <video style={{ border: "4px dashed dodgerblue" }} muted ref={userVideo} autoPlay playsInline />
+                <video muted ref={userVideo} autoPlay playsInline />
                 {peers.map((peer, index) => {
                     return <PeerVideo key={index} peer={peer} />;
                 })}
             </div>
 
-            <div>
-                <Chat />
-            </div>
+            <Chat />
+
+            {/* <Controls myVideoRef={userVideo} videoHidden={videoHidden} setVideoHidden={setVideoHidden} /> */}
         </div>
     );
 };

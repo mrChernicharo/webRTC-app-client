@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
 import { Link } from "react-router-dom";
-import ClipboardCopy from "../components/ClipboardCopy";
+import ClipboardCopy from "../components/small/ClipboardCopy";
 
 function CreateRoom() {
     const [newRoomId, setNewRoomId] = useState("");
@@ -25,7 +25,7 @@ function CreateRoom() {
             {newRoomId ? (
                 <div className="flex flex-col">
                     <ClipboardCopy text={newRoomUrl} />
-                    <Link to={roomPath}>Start Video Call</Link>
+                    <Link to={roomPath}>Start Video Chat</Link>
                 </div>
             ) : (
                 <button onClick={createRoom}>Create Room Link</button>

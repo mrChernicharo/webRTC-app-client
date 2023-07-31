@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
-import { UserContext } from "../UserContext";
-import { socket } from "../socket";
+import { UserContext } from "../../UserContext";
+import { socket } from "../../socket";
 
 function Chat() {
     const { name, id } = useContext(UserContext);

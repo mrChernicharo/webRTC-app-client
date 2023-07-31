@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CreateRoom from "./pages/CreateRoom";
 import Room from "./pages/Room";
 import Home from "./pages/Home";
-import Layout from "./Layout";
+import Layout from "./components/large/Layout";
 
 const HomePage = (
     <Layout>

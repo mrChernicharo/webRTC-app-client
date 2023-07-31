@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../../UserContext";
 import { Link } from "react-router-dom";
-import UsernameInput from "./components/UsernameInput";
+import UsernameInput from "./UsernameInput";
 
 function Header() {
     const { id, name } = useContext(UserContext);

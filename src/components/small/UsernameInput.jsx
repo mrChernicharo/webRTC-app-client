@@ -1,5 +1,5 @@
 import { useContext, useRef } from "react";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../../UserContext";
 
 export default function UsernameInput() {
     const { setUserName, name } = useContext(UserContext);

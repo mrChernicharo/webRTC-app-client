@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import JoinRoomForm from "../components/JoinRoomForm";
+import JoinRoomForm from "../components/large/JoinRoomForm";
 
 function Home() {
     return (
