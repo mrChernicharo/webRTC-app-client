@@ -4,7 +4,7 @@ function ClipboardCopy({ text }) {
         console.log("link copied!");
     }
     return (
-        <span style={{ color: "dodgerblue", cursor: "pointer" }} onClick={copyToClipboard}>
+        <span className="text-md text-green-600 bg-black rounded-lg px-4 py-2 cursor-pointer" onClick={copyToClipboard}>
             {text}
         </span>
     );

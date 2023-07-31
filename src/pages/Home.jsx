@@ -1,12 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import JoinRoomForm from "../components/JoinRoomForm";
 
 function Home() {
     return (
         <div className="home">
             <h3>Home</h3>
-            <h1 className="bg-red-500">Welcome to webRTC App</h1>
+            <h1>Welcome to Video Chatz</h1>
 
-            <Link to="/create">Create Room</Link>
+            <JoinRoomForm />
         </div>
     );
 }

@@ -21,14 +21,14 @@ function CreateRoom() {
     return (
         <div className="create-room">
             <h3>Create Room</h3>
-            <h1>WebRTC</h1>
 
-            <button onClick={createRoom}>Create Room Link</button>
-            {newRoomId && (
-                <div>
+            {newRoomId ? (
+                <div className="flex flex-col">
                     <ClipboardCopy text={newRoomUrl} />
                     <Link to={roomPath}>Start Video Call</Link>
                 </div>
+            ) : (
+                <button onClick={createRoom}>Create Room Link</button>
             )}
         </div>
     );
