@@ -22,7 +22,7 @@ export function useWebRTC() {
 
         console.log("SERVER: all users", { users, peers });
         peersRef.current = peers;
-        setPeers(peers);
+        setPeers(peersRef.current);
     }
 
     function onUserJoined(payload) {
@@ -32,8 +32,8 @@ export function useWebRTC() {
         const peer = addPeer(signal, callerID, stream);
         console.log("new peer", { peer });
 
-        peersRef.current.push(peer);
-        setPeers((peers) => [...peers, peer]);
+        peersRef.current = [...peersRef.current, peer]
+        setPeers(peersRef.current);
     }
 
     function onReceiveReturn(payload) {
@@ -50,8 +50,8 @@ export function useWebRTC() {
 
         const remainingPeers = destroyPeer(user, remainingUsers, stream);
 
-        peersRef.current = remainingPeers;
-        setPeers(remainingPeers);
+
+        setPeers(peersRef.current);
     }
 
     useEffect(() => {
@@ -104,7 +104,6 @@ export function useWebRTC() {
             peer: new Peer({
                 initiator: true,
                 trickle: false,
-                allowHalfTrickle: true,
                 stream,
             }),
         };
@@ -122,7 +121,6 @@ export function useWebRTC() {
             peer: new Peer({
                 initiator: false,
                 trickle: false,
-                allowHalfTrickle: true,
                 stream,
             }),
         };
@@ -143,7 +141,9 @@ export function useWebRTC() {
             peersRef.current.find((p) => p.peerID === user),
             peersRef.current.filter((p) => p.peerID !== user),
         ];
+
         leavingPeer?.peer?.destroy();
+        peersRef.current = remainingPeers;
 
         return remainingPeers;
     }

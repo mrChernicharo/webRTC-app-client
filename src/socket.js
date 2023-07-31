@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
 
-const socket = io("https://webrtc-app-server.onrender.com", {
+const socket = io("localhost:8000", {
+    // const socket = io("https://webrtc-app-server.onrender.com", {
     autoConnect: false,
 });
 
