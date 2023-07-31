@@ -1,8 +1,3 @@
-import * as process from "process";
-window.global = window;
-window.process = process;
-window.Buffer = [];
-
 import { useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import { socket } from "./socket";
@@ -14,62 +9,90 @@ const videoConstraints = {
 
 export function useWebRTC() {
     const [peers, setPeers] = useState([]);
+    const [stream, setStream] = useState(undefined);
     const userVideo = useRef();
     const peersRef = useRef([]);
     const roomID = location.pathname.replace("/room/", "");
 
+    function onAllUsers(users) {
+        const peers = [];
+        users.forEach((userID) => {
+            const peer = createPeer(userID, socket.id, stream);
+            peersRef.current.push(peer);
+            peers.push(peer);
+        });
+
+        console.log("SERVER: all users", { users, peers });
+        setPeers(peers);
+    }
+
+    function onUserJoined(payload) {
+        const { signal, callerID } = payload;
+        console.log("SERVER: user joined", { signalType: signal.type, callerID });
+
+        const peer = addPeer(signal, callerID, stream);
+        console.log("new peer", { peer });
+
+        peersRef.current.push(peer);
+        setPeers((peers) => [...peers, peer]);
+    }
+
+    function onReceiveReturn(payload) {
+        const { signal, id } = payload;
+        console.log("SERVER: receiving returned signal", { signalType: signal.type, id });
+
+        const { peer } = peersRef.current.find((p) => p.peerID === id);
+        peer.signal(signal);
+    }
+
+    function onUserLeft(payload) {
+        const { user, remainingUsers } = payload;
+        console.log("SERVER: user left", { user, remainingUsers });
+
+        const remainingPeers = destroyPeer(user, remainingUsers, stream);
+
+        setPeers(remainingPeers);
+    }
+
+    useEffect(() => {
+        navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream) => {
+            setStream(stream);
+        });
+    }, []);
+
+    useEffect(() => {
+        if (stream) {
+            userVideo.current.srcObject = stream;
+
+            socket.emit("join room", roomID);
+
+            socket.on("all users",onAllUsers);
+
+            socket.on("user joined", onUserJoined);
+
+            socket.on("receiving returned signal", onReceiveReturn);
+
+            socket.on("user left", onUserLeft);
+        }
+
+        return () => {
+            if (stream) {
+                socket.off("all users",onAllUsers);
+
+                socket.off("user joined", onUserJoined);
+
+                socket.off("receiving returned signal", onReceiveReturn);
+
+                socket.off("user left", onUserLeft);
+
+                setStream(undefined)
+            }
+        };
+    }, [stream]);
+
     useEffect(() => {
         console.log({ peers });
     }, [peers]);
-
-    useEffect(() => {
-        navigator.mediaDevices
-            .getUserMedia({ video: videoConstraints, audio: true })
-            .then((stream) => {
-                userVideo.current.srcObject = stream;
-                socket.emit("join room", roomID);
-
-                socket.on("all users", (users) => {
-                    const peers = [];
-                    users.forEach((userID) => {
-                        const peer = createPeer(userID, socket.id, stream);
-                        peersRef.current.push(peer);
-                        peers.push(peer);
-                    });
-
-                    console.log("SERVER: all users", { users, peers });
-                    setPeers(peers);
-                });
-
-                socket.on("user joined", (payload) => {
-                    const { signal, callerID } = payload;
-                    console.log("SERVER: user joined", { signalType: signal.type, callerID });
-
-                    const peer = addPeer(signal, callerID, stream);
-                    peersRef.current.push(peer);
-                    setPeers((peers) => [...peers, peer]);
-                    console.log("new peer", { peer });
-                });
-
-                socket.on("receiving returned signal", (payload) => {
-                    const { signal, id } = payload;
-                    console.log("SERVER: receiving returned signal", { signalType: signal.type, id });
-
-                    const { peer } = peersRef.current.find((p) => p.peerID === id);
-                    peer.signal(signal);
-                });
-
-                socket.on("user left", ({ user, remainingUsers }) => {
-                    // const leavingPeer = peersRef.current.find((p) => p.peerID === user);
-                    console.log("SERVER: user left", { user, remainingUsers });
-
-                    destroyPeer(user, remainingUsers, stream);
-                });
-            })
-            .catch((err) => {
-                console.warn(err);
-            });
-    }, []);
 
     function createPeer(userToSignal, callerID, stream) {
         const peerObject = {
@@ -123,8 +146,8 @@ export function useWebRTC() {
         ];
         leavingPeer?.peer?.destroy();
         peersRef.current = remainingPeers;
-        setPeers([...peersRef.current]);
 
+        return remainingPeers;
     }
 
     return {
