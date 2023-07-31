@@ -1,19 +1,27 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 function PeerVideo({ peer }) {
     const ref = useRef();
+    const [loading, setLoading] = useState(true);
+
+    const onStream = (stream) => {
+        setLoading(false);
+        ref.current.srcObject = stream;
+    };
 
     useEffect(() => {
         console.log(peer);
+        peer.peer.on("stream", onStream);
 
-        peer.peer.on("stream", (stream) => {
-            ref.current.srcObject = stream;
-        });
+        return () => {
+            peer.peer.off("stream", onStream);
+        };
     }, []);
 
     return (
         <div>
             <div>id: {peer.peerID}</div>
+            {loading && <div>loading...</div>}
             <video playsInline autoPlay ref={ref} />
         </div>
     );
