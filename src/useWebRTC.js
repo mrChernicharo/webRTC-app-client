@@ -138,7 +138,7 @@ export function useWebRTC() {
 
                 socket.off("user left", onUserLeft);
 
-                setStream(undefined);
+                // setStream(undefined);
             }
         };
     }, [stream]);
