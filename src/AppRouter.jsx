@@ -21,6 +21,7 @@ const RoomPage = (
 );
 
 function AppRouter() {
+    console.log({ importMetaEnv: import.meta.env });
     return (
         <BrowserRouter>
             <Routes>
