@@ -9,7 +9,7 @@ import TurnedOffAudioSplash from "../components/small/TurnedOffAudioSplash";
 
 const Room = () => {
     const { id } = useContext(UserContext);
-    const { peers, userVideo, videoOn, audioOn, setVideoOn, setAudioOn } = useWebRTC();
+    const { peers, userVideo, videoOn, audioOn, onControlChange } = useWebRTC();
 
     return (
         <div>
@@ -30,29 +30,7 @@ const Room = () => {
 
             <Chat />
 
-            <Controls
-                onChange={(change) => {
-                    if (change.video) {
-                        if (change.video === "on") {
-                            userVideo.current.play();
-                            setVideoOn(true);
-                        }
-                        if (change.video === "off") {
-                            userVideo.current.pause();
-                            setVideoOn(false);
-                        }
-                    }
-
-                    if (change.audio) {
-                        if (change.audio === "on") {
-                            setAudioOn(true);
-                        }
-                        if (change.audio === "off") {
-                            setAudioOn(false);
-                        }
-                    }
-                }}
-            />
+            <Controls onChange={onControlChange} />
         </div>
     );
 };

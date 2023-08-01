@@ -214,7 +214,28 @@ export function useWebRTC() {
         userVideo,
         videoOn,
         audioOn,
-        setVideoOn,
-        setAudioOn,
+        // setVideoOn,
+        // setAudioOn,
+        onControlChange: (change) => {
+            if (change.video) {
+                if (change.video === "on") {
+                    userVideo.current.play();
+                    setVideoOn(true);
+                }
+                if (change.video === "off") {
+                    userVideo.current.pause();
+                    setVideoOn(false);
+                }
+            }
+
+            if (change.audio) {
+                if (change.audio === "on") {
+                    setAudioOn(true);
+                }
+                if (change.audio === "off") {
+                    setAudioOn(false);
+                }
+            }
+        },
     };
 }
