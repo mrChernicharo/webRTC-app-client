@@ -9,11 +9,9 @@ function Chat({ messages, closeChat, sendTextMessage }) {
     const messagesPaneRef = useRef(null);
 
     function scrollToBottom() {
-        setTimeout(() => {
-            messagesPaneRef.current.scrollTo({
-                top: 100_000_000,
-            });
-        }, 0);
+        messagesPaneRef.current.scrollTo({
+            top: 100_000_000,
+        });
     }
 
     useEffect(() => {
@@ -53,7 +51,7 @@ function Chat({ messages, closeChat, sendTextMessage }) {
                             e.preventDefault();
                             sendTextMessage(e.target.value.trim());
                             e.target.value = "";
-                            scrollToBottom();
+                            setTimeout(scrollToBottom, 0);
                         }
                     }}
                 />

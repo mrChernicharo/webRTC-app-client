@@ -30,8 +30,6 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
 
     const navigateTo = useNavigate();
 
-    // useEffect(() => {}, []);
-
     function toggleVideo() {
         if (videoOff) {
             socket.emit("set-video-on", roomID, id);
