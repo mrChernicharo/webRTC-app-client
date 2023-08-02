@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../UserContext";
 import { socket } from "../../socket";
+import { BiChat } from "react-icons/bi";
+import { MdClose } from "react-icons/md";
 
 function Chat() {
     const { name, id } = useContext(UserContext);
@@ -34,12 +36,16 @@ function Chat() {
     }, [messages]);
 
     return (
-        <div className="chat" style={{ border: "1px solid #555", width: 300 }}>
+        <>
             {show ? (
-                <>
-                    <button onClick={() => setShow(false)}>Hide Chat</button>
+                <div className="bg-[#222] p-4">
+                    <div className="flex justify-end">
+                        <button onClick={() => setShow(false)}>
+                            <MdClose />
+                        </button>
+                    </div>
 
-                    <ul>
+                    <ul className="min-h-[160px] max-h-[50vh] overflow-y-auto">
                         {messages.map((msg, i) => (
                             <li key={msg.id || i}>
                                 <span>
@@ -50,7 +56,8 @@ function Chat() {
                     </ul>
 
                     <textarea
-                        style={{ maxWidth: 298, width: "100%", minHeight: 60 }}
+                        className="max-w-[320px] max-h-[120px] min-h-[60px]"
+                        // style={{ maxWidth: 298, width: "100%", minHeight: 60 }}
                         onKeyDown={(e) => {
                             if (e.target.value.trim() && e.key === "Enter" && !e.shiftKey) {
                                 e.preventDefault();
@@ -59,15 +66,17 @@ function Chat() {
                             }
                         }}
                     />
-                </>
+                </div>
             ) : (
-                <div>
+                <div className="fixed bottom-4 right-4 z-30">
                     {hasNewMsgs && <div style={{ width: 10, height: 10, background: "red" }}></div>}
 
-                    <button onClick={() => setShow(true)}>Open Chat</button>
+                    <button onClick={() => setShow(true)}>
+                        <BiChat size={42} />
+                    </button>
                 </div>
             )}
-        </div>
+        </>
     );
 }
 
