@@ -21,7 +21,7 @@ function Chat({ messages, closeChat, sendTextMessage }) {
     return (
         <div
             className="fixed right-0 bg-[#222] p-4 border"
-            style={{ bottom: 64, width: 300, height: "calc(100% - 126px)" }}
+            style={{ bottom: 64, width: 300, height: "calc(100% - 106px)" }}
         >
             <div className="relative h-full">
                 <div className="flex justify-end">
@@ -32,7 +32,7 @@ function Chat({ messages, closeChat, sendTextMessage }) {
 
                 <ul
                     className="absolute bottom-20 w-full border overflow-y-auto"
-                    style={{ maxHeight: "calc(100% - 300px)" }}
+                    style={{ maxHeight: "calc(100% - 120px)" }}
                     ref={messagesPaneRef}
                 >
                     {messages.map((msg, i) => (
@@ -45,7 +45,7 @@ function Chat({ messages, closeChat, sendTextMessage }) {
                 </ul>
 
                 <textarea
-                    className="absolute bottom-0 w-full max-h-[120px] min-h-[60px]"
+                    className="absolute bottom-0 w-full max-h-[80px] min-h-[60px]"
                     onKeyDown={(e) => {
                         if (e.target.value.trim() && e.key === "Enter" && !e.shiftKey) {
                             e.preventDefault();

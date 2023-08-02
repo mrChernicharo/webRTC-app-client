@@ -12,10 +12,10 @@ const Room = () => {
     return (
         <>
             <div className="border flex" style={{ width: showChat ? "calc(100vw - 300px)" : "100vw" }}>
-                <div className="w-full">
-                    <ul>
+                <div className="relative w-full" style={{ height: "calc(100dvh - 108px)" }}>
+                    <ul className="grid grid-cols-2">
                         {peers.map((p, index) => (
-                            <li key={index}>
+                            <li className="border" key={index}>
                                 <PeerVideo peerID={p.peerID} peer={p.peer} video={p.video} audio={p.audio} />
                             </li>
                         ))}
@@ -24,8 +24,9 @@ const Room = () => {
                     <UserVideo videoRef={userVideo} videoOn={videoOn} audioOn={audioOn} />
                 </div>
 
-                <Controls onChange={onControlChange} toggleChat={toggleChat} hasNewMsgs={hasNewMsgs} />
                 {showChat && <Chat messages={messages} closeChat={closeChat} sendTextMessage={sendTextMessage} />}
+
+                <Controls onChange={onControlChange} toggleChat={toggleChat} hasNewMsgs={hasNewMsgs} />
             </div>
         </>
     );

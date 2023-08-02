@@ -6,7 +6,7 @@ export default function UsernameInput() {
     const inputRef = useRef(null);
 
     return (
-        <div>
+        <div style={{ marginBlock: -11 }}>
             <label htmlFor="username">username</label>
             <input
                 ref={inputRef}

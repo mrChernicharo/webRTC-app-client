@@ -7,11 +7,11 @@ export default function UserVideo({ videoRef, videoOn, audioOn }) {
     const { id } = useContext(UserContext);
 
     return (
-        <div>
-            <div>{id}</div>
+        <div className="absolute bottom-4 right-4">
+            <div className="absolute">{id}</div>
 
             <div style={{ display: videoOn ? "block" : "none" }}>
-                <video muted ref={videoRef} autoPlay playsInline />
+                <video className="rounded-lg" muted ref={videoRef} autoPlay playsInline />
             </div>
 
             {!videoOn && <TurnedOffCamSplash />}

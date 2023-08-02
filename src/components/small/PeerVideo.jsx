@@ -26,8 +26,8 @@ function PeerVideo({ peerID, video, audio, peer }) {
     }, [audio]);
 
     return (
-        <div>
-            <div>id: {peerID}</div>
+        <div className="relative">
+            <div className="absolute">id: {peerID}</div>
 
             {loading && <div>loading...</div>}
 
