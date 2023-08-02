@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { socket } from "../../socket";
+import { UserContext } from "../../UserContext";
 import {
     FaBeer,
     FaFileAudio,
@@ -13,18 +14,21 @@ import {
     FaWindowClose,
     FaLaptop,
 } from "react-icons/fa";
-import { socket } from "../../socket";
-import { UserContext } from "../../UserContext";
+import { FiShare, FiUsers } from "react-icons/fi";
+import { BiChat } from "react-icons/bi";
 import ClipboardCopy from "../small/ClipboardCopy";
 import Modal from "../small/Modal";
+import { useNavigate } from "react-router-dom";
 
-function Controls({ onChange }) {
+function Controls({ onChange, toggleChat, hasNewMsgs }) {
     const [videoOff, setVideoOff] = useState(false);
     const [audioOff, setAudioOff] = useState(false);
     const [showModal, setShowModal] = useState(false);
 
     const { id } = useContext(UserContext);
     const roomID = location.pathname.replace("/room/", "");
+
+    const navigateTo = useNavigate();
 
     // useEffect(() => {}, []);
 
@@ -52,38 +56,60 @@ function Controls({ onChange }) {
 
     return (
         <div className="w-full fixed bottom-0 left-0 border flex items-center justify-center gap-4">
-            <div>
-                <button onClick={toggleVideo}>
-                    {videoOff ? (
-                        <span className="text-red-500">
-                            <FaVideo />
+            <div className="flex items-center">
+                <button className="flex flex-col items-center" onClick={toggleAudio}>
+                    {audioOff ? (
+                        <span className="flex flex-col items-center text-red-500">
+                            unmute <FaMicrophone />
                         </span>
                     ) : (
-                        <span className="">
-                            <FaVideoSlash />
+                        <span className="flex flex-col items-center">
+                            mute <FaMicrophoneSlash />
                         </span>
                     )}
                 </button>
 
-                <button onClick={toggleAudio}>
-                    {audioOff ? (
-                        <span className="text-red-500">
-                            <FaMicrophone />
+                <button onClick={toggleVideo}>
+                    {videoOff ? (
+                        <span className="flex flex-col items-center text-red-500">
+                            start video <FaVideo />
                         </span>
                     ) : (
-                        <span className="">
-                            <FaMicrophoneSlash />
+                        <span className="flex flex-col items-center">
+                            stop video <FaVideoSlash />
                         </span>
                     )}
+                </button>
+
+                <button className="flex flex-col items-center" onClick={() => setShowModal(true)}>
+                    Participants <FiUsers />
                 </button>
             </div>
 
             <FaViadeo size={24} />
 
             <div className="flex items-center">
-                <button onClick={() => setShowModal(true)}>Invite</button>
-                <button className="h-10" onClick={() => setShowModal(true)}>
-                    <FaLaptop />
+                <button className="flex flex-col items-center" onClick={() => setShowModal(true)}>
+                    Invite <FiShare />
+                </button>
+
+                <button className="flex flex-col items-center" onClick={() => setShowModal(true)}>
+                    Screen Share <FaLaptop />
+                </button>
+
+                <div className="relative">
+                    {hasNewMsgs && <div className="absolute h-4 w-4 rounded-full bg-red-500"></div>}
+
+                    <button onClick={toggleChat}>
+                        <BiChat size={42} />
+                    </button>
+                </div>
+
+                <button
+                    className="flex flex-col items-center text-white font-bold bg-red-500"
+                    onClick={() => navigateTo("/create")}
+                >
+                    End
                 </button>
             </div>
 
