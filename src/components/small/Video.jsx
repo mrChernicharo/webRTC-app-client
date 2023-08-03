@@ -4,8 +4,6 @@ import TurnedOffCamSplash from "./TurnedOffCamSplash";
 import TurnedOffAudioSplash from "./TurnedOffAudioSplash";
 import { UserContext } from "../../UserContext";
 
-const { width, height } = videoConstraints;
-
 export function UserVideo({ videoRef, videoOn, audioOn }) {
     const { id, name } = useContext(UserContext);
 
@@ -14,19 +12,18 @@ export function UserVideo({ videoRef, videoOn, audioOn }) {
         <div className="relative h-full">
             <div className="absolute z-10">{name}</div>
 
-            <div className="h-full" style={{ display: videoOn ? "block" : "none" }}>
+            <div className="h-full">
                 <video
-                    className="object-cover w-full h-full -scale-x-100"
+                    className="object-cover w-full -scale-x-100"
                     muted
                     ref={videoRef}
                     autoPlay
                     playsInline
-                    style={{ height: (window.innerHeight - 200) / 2 }}
+                    style={{ display: videoOn ? "block" : "none", height: videoOn ? "100%" : "0px" }}
                 />
+                {!videoOn && <TurnedOffCamSplash />}
+                {!audioOn && <TurnedOffAudioSplash />}
             </div>
-
-            {!videoOn && <TurnedOffCamSplash />}
-            {!audioOn && <TurnedOffAudioSplash />}
         </div>
     );
 }
@@ -51,21 +48,19 @@ export function PeerVideo({ peerID, video, audio, peer }) {
         <div className="relative h-full">
             <div className="absolute">{peerID}</div>
 
-            <div className="h-full" style={{ display: video ? "block" : "none" }}>
+            <div className="h-full">
                 <video
                     className="object-cover h-full w-full border"
                     playsInline
                     autoPlay={audio}
                     muted={!audio}
                     ref={ref}
-                    width={width}
-                    height={height}
-                    style={{ height: (window.innerHeight - 200) / 2 }}
+                    style={{ display: video ? "block" : "none", height: video ? "100%" : "0px" }}
                 />
-            </div>
 
-            {(loading || !video) && <TurnedOffCamSplash />}
-            {!audio && <TurnedOffAudioSplash />}
+                {(loading || !video) && <TurnedOffCamSplash />}
+                {!audio && <TurnedOffAudioSplash />}
+            </div>
         </div>
     );
 }

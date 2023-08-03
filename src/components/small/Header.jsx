@@ -20,7 +20,6 @@ function Header() {
                 <div>
                     {location.pathname !== "/" && (
                         <a
-                            href="#"
                             onClick={(e) => {
                                 // prettier-ignore
                                 if (location.pathname !== "/create" && confirm("Are you sure you want to navigate away from this page?\n\nPress OK to continue, or Cancel to stay on the current page."))

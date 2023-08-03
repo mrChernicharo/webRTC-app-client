@@ -3,8 +3,7 @@ import Peer from "simple-peer";
 import { socket } from "./socket";
 
 export const videoConstraints = {
-    height: 280,
-    width: 400,
+audio: true, video: true
 };
 
 export function useWebRTC() {
@@ -101,6 +100,10 @@ export function useWebRTC() {
             setAudioOn(true);
             setStream(stream);
         });
+
+        return () => {
+            setPeers([])
+        }
     }, []);
 
     useEffect(() => {
