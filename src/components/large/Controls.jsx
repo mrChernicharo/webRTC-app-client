@@ -13,6 +13,7 @@ import {
     FaVideoSlash,
     FaWindowClose,
     FaLaptop,
+    FaPowerOff,
 } from "react-icons/fa";
 import { FiShare, FiUsers } from "react-icons/fi";
 import { BiChat } from "react-icons/bi";
@@ -55,74 +56,38 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
     }
 
     return (
-        <div className="w-full fixed bottom-0 left-0 border flex items-center justify-center gap-4">
+        <div className="w-full max-w-full fixed bottom-0 left-0 border flex items-center justify-center gap-4">
             <div className="flex items-center">
-                <button className="btn flex flex-col items-center" onClick={toggleAudio}>
-                    {audioOff ? (
-                        <span className="flex flex-col items-center text-red-500">
-                            unmute <FaMicrophone />
-                        </span>
-                    ) : (
-                        <span className="flex flex-col items-center">
-                            mute <FaMicrophoneSlash />
-                        </span>
-                    )}
-                </button>
-
-                {/* <Swap size={40} On={<FaHeart />} Off={<FaAmbulance />} checked={audioOff} /> */}
-
-                <button className="btn flex flex-col items-center" onClick={toggleVideo}>
-                    {videoOff ? (
-                        <span className="flex flex-col items-center text-red-500">
-                            start video <FaVideo />
-                        </span>
-                    ) : (
-                        <span className="flex flex-col items-center">
-                            stop video <FaVideoSlash />
-                        </span>
-                    )}
-                </button>
-
-                <button className="btn flex flex-col items-center" onClick={() => setShowInviteModal(true)}>
-                    <span className="flex flex-col items-center">
-                        Participants <FiUsers />
-                    </span>
-                </button>
+                <MenuButton
+                    text={audioOff ? "unmute" : "mute"}
+                    Icon={audioOff ? <FaVideo /> : <FaVideoSlash />}
+                    onClick={toggleAudio}
+                    style={{ background: videoOff ? "red" : "" }}
+                />
+                <MenuButton
+                    text={videoOff ? "start video" : "stop video"}
+                    Icon={videoOff ? <FaVideo /> : <FaVideoSlash />}
+                    onClick={toggleVideo}
+                    style={{ background: videoOff ? "red" : "" }}
+                />
+                <MenuButton text="Participants" Icon={<FiUsers />} onClick={() => setShowInviteModal(true)} />
             </div>
 
             <FaViadeo size={24} />
 
             <div className="flex items-center">
-                <button className="btn flex flex-col items-center" onClick={() => setShowInviteModal(true)}>
-                    <span className="flex flex-col items-center">
-                        Invite <FiShare />
-                    </span>
-                </button>
-
-                <button className="btn flex flex-col items-center" onClick={() => setShowInviteModal(true)}>
-                    <span className="flex flex-col items-center">
-                        Screen Share <FaLaptop />
-                    </span>
-                </button>
+                <MenuButton text="Invite" Icon={<FiShare />} onClick={() => setShowInviteModal(true)} />
+                <MenuButton text="Screen Share" Icon={<FaLaptop />} onClick={() => setShowInviteModal(true)} />
 
                 <div className="relative">
-                    {hasNewMsgs && (
-                        <div className="absolute h-3 w-3 rounded-full bg-red-500 -translate-x-0.5 -translate-y-0.5"></div>
-                    )}
-
-                    <button className="btn btn-accent flex flex-col items-center" onClick={toggleChat}>
-                        <span className="flex flex-col items-center">
-                            <BiChat size={32} />
-                        </span>
-                    </button>
+                    {hasNewMsgs && <Badge />}
+                    <MenuButton Icon={<BiChat size={32} />} onClick={toggleChat} className="btn-accent" />
                 </div>
-
-                <button
-                    className="btn flex flex-col items-center text-white font-bold bg-red-500"
+                <MenuButton
+                    Icon={<FaPowerOff size={24} />}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold"
                     onClick={() => navigateTo("/create")}
-                >
-                    End
-                </button>
+                />
             </div>
 
             {showInviteModal && (
@@ -134,6 +99,20 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
             )}
         </div>
     );
+}
+
+function MenuButton({ Icon = undefined, onClick, text = "", className = "", style = {} }) {
+    return (
+        <button className={`btn flex flex-col items-center ${className}`} onClick={onClick} style={style}>
+            <span className="flex flex-col items-center">
+                <span className="hidden md:inline">{text}</span> {!!Icon && Icon}
+            </span>
+        </button>
+    );
+}
+
+function Badge() {
+    return <div className="absolute h-3 w-3 rounded-full bg-red-500 -translate-x-0.5 -translate-y-0.5"></div>;
 }
 
 export default Controls;

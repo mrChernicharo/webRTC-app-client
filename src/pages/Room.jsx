@@ -38,13 +38,12 @@ const Room = () => {
 
     return (
         <>
-            <div className="border flex" style={{ width: showChat ? "calc(100vw - 300px)" : "100vw" }}>
+            <div className="flex overflow-hidden" style={{ width: showChat ? "calc(100vw - 300px)" : "100vw" }}>
                 <div className="relative w-full">
-                    <div>{frameCount}</div>
                     <ul
-                        className="grid border"
+                        className="grid"
                         style={{
-                            height: window.innerHeight - 200,
+                            height: "calc(100dvh - 94px)",
                             gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
                             gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
                         }}
