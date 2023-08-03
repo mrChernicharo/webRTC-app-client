@@ -14,7 +14,6 @@ function Header() {
             <div className="flex gap-4">
                 <FaViadeo size={24} />
                 <div>{!!name && name}</div>
-                {/* <div>{!name ? <UsernameInput /> : <span>username: {name || "unknown"}</span>}</div> */}
             </div>
             <div className="flex gap-4 items-center">
                 <div>{id && <span>userID: {id}</span>}</div>
@@ -23,12 +22,8 @@ function Header() {
                         <a
                             href="#"
                             onClick={(e) => {
-                                if (
-                                    location.pathname !== "/create" &&
-                                    confirm(
-                                        "Are you sure you want to navigate away from this page?\n..... ...\n...  ... \nPress OK to continue, or Cancel to stay on the current page."
-                                    )
-                                )
+                                // prettier-ignore
+                                if (location.pathname !== "/create" && confirm("Are you sure you want to navigate away from this page?\n\nPress OK to continue, or Cancel to stay on the current page."))
                                     navigateTo("/");
                             }}
                         >
