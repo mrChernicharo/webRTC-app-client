@@ -19,11 +19,13 @@ import { BiChat } from "react-icons/bi";
 import ClipboardCopy from "../small/ClipboardCopy";
 import Modal from "../small/Modal";
 import { useNavigate } from "react-router-dom";
+import { FaHeart, Fa500Px, FaAmbulance } from "react-icons/fa";
+import Swap from "../small/Swap";
 
 function Controls({ onChange, toggleChat, hasNewMsgs }) {
     const [videoOff, setVideoOff] = useState(false);
     const [audioOff, setAudioOff] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [showInviteModal, setShowInviteModal] = useState(false);
 
     const { id } = useContext(UserContext);
     const roomID = location.pathname.replace("/room/", "");
@@ -55,7 +57,7 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
     return (
         <div className="w-full fixed bottom-0 left-0 border flex items-center justify-center gap-4">
             <div className="flex items-center">
-                <button className="flex flex-col items-center" onClick={toggleAudio}>
+                <button className="btn flex flex-col items-center" onClick={toggleAudio}>
                     {audioOff ? (
                         <span className="flex flex-col items-center text-red-500">
                             unmute <FaMicrophone />
@@ -67,7 +69,9 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
                     )}
                 </button>
 
-                <button onClick={toggleVideo}>
+                {/* <Swap size={40} On={<FaHeart />} Off={<FaAmbulance />} checked={audioOff} /> */}
+
+                <button className="btn flex flex-col items-center" onClick={toggleVideo}>
                     {videoOff ? (
                         <span className="flex flex-col items-center text-red-500">
                             start video <FaVideo />
@@ -79,40 +83,50 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
                     )}
                 </button>
 
-                <button className="flex flex-col items-center" onClick={() => setShowModal(true)}>
-                    Participants <FiUsers />
+                <button className="btn flex flex-col items-center" onClick={() => setShowInviteModal(true)}>
+                    <span className="flex flex-col items-center">
+                        Participants <FiUsers />
+                    </span>
                 </button>
             </div>
 
             <FaViadeo size={24} />
 
             <div className="flex items-center">
-                <button className="flex flex-col items-center" onClick={() => setShowModal(true)}>
-                    Invite <FiShare />
+                <button className="btn flex flex-col items-center" onClick={() => setShowInviteModal(true)}>
+                    <span className="flex flex-col items-center">
+                        Invite <FiShare />
+                    </span>
                 </button>
 
-                <button className="flex flex-col items-center" onClick={() => setShowModal(true)}>
-                    Screen Share <FaLaptop />
+                <button className="btn flex flex-col items-center" onClick={() => setShowInviteModal(true)}>
+                    <span className="flex flex-col items-center">
+                        Screen Share <FaLaptop />
+                    </span>
                 </button>
 
                 <div className="relative">
-                    {hasNewMsgs && <div className="absolute h-4 w-4 rounded-full bg-red-500"></div>}
+                    {hasNewMsgs && (
+                        <div className="absolute h-3 w-3 rounded-full bg-red-500 -translate-x-0.5 -translate-y-0.5"></div>
+                    )}
 
-                    <button onClick={toggleChat}>
-                        <BiChat size={42} />
+                    <button className="btn btn-accent flex flex-col items-center" onClick={toggleChat}>
+                        <span className="flex flex-col items-center">
+                            <BiChat size={32} />
+                        </span>
                     </button>
                 </div>
 
                 <button
-                    className="flex flex-col items-center text-white font-bold bg-red-500"
+                    className="btn flex flex-col items-center text-white font-bold bg-red-500"
                     onClick={() => navigateTo("/create")}
                 >
                     End
                 </button>
             </div>
 
-            {showModal && (
-                <Modal onClose={() => setShowModal(false)}>
+            {showInviteModal && (
+                <Modal onClose={() => setShowInviteModal(false)}>
                     <div className="py-4">Copy the link and share it with your friends</div>
 
                     <ClipboardCopy text={location.href} />
