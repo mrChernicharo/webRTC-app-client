@@ -26,15 +26,23 @@ function PeerVideo({ peerID, video, audio, peer }) {
     }, [audio]);
 
     return (
-        <div className="relative">
+        <div className="relative h-full">
             <div className="absolute">id: {peerID}</div>
 
-            {loading && <div>loading...</div>}
-
-            <div style={{ display: video ? "block" : "none" }}>
-                <video playsInline autoPlay={audio} muted={!audio} ref={ref} width={width} height={height} />
+            <div className="h-full" style={{ display: video ? "block" : "none" }}>
+                <video
+                    className="object-cover h-full w-full border"
+                    playsInline
+                    autoPlay={audio}
+                    muted={!audio}
+                    ref={ref}
+                    width={width}
+                    height={height}
+                    style={{ height: 400 }}
+                />
             </div>
 
+            {loading && <div>loading...</div>}
             {!video && <TurnedOffCamSplash />}
             {!audio && <TurnedOffAudioSplash />}
         </div>
