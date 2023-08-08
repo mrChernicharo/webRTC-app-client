@@ -2,10 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import { socket } from "./socket";
 
-export const videoConstraints = {
-audio: true, video: true
-};
-
 export function useWebRTC() {
     const [peers, setPeers] = useState([]);
     const [stream, setStream] = useState(undefined);
@@ -95,68 +91,75 @@ export function useWebRTC() {
     }
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then((stream) => {
-            setVideoOn(true);
-            setAudioOn(true);
-            setStream(stream);
-        });
+        if (!userVideo.current) return;
+
+        navigator.mediaDevices
+            .getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                console.log("requested user media", stream);
+                setVideoOn(true);
+                setAudioOn(true);
+                setStream(stream);
+            })
+            .catch((err) => {
+                console.log("error requesting user media");
+            });
 
         return () => {
-            setPeers([])
-        }
-    }, []);
+            setStream(undefined);
+        };
+    }, [userVideo.current]);
 
     useEffect(() => {
-        if (stream) {
-            userVideo.current.srcObject = stream;
+        if (!stream || !userVideo.current) return;
+        userVideo.current.srcObject = stream;
 
-            socket.emit("join room", roomID);
+        socket.emit("join room", roomID);
 
-            socket.on("video-on", onVideoOn);
-            socket.on("video-off", onVideoOff);
-            socket.on("audio-on", onAudioOn);
-            socket.on("audio-off", onAudioOff);
+        socket.on("video-on", onVideoOn);
+        socket.on("video-off", onVideoOff);
+        socket.on("audio-on", onAudioOn);
+        socket.on("audio-off", onAudioOff);
 
-            socket.on("all users", onAllUsers);
+        socket.on("all users", onAllUsers);
 
-            socket.on("user joined", onUserJoined);
+        socket.on("user joined", onUserJoined);
 
-            socket.on("receiving returned signal", onReceiveReturn);
+        socket.on("receiving returned signal", onReceiveReturn);
 
-            socket.on("user left", onUserLeft);
-        }
+        socket.on("user left", onUserLeft);
 
         return () => {
-            if (stream) {
-                socket.off("video-ff", onVideoOn);
-                socket.off("video-off", onVideoOff);
-                socket.off("audio-on", onAudioOn);
-                socket.off("audio-off", onAudioOff);
+            // if (userVideo.current?.srcObject) {
+            //     userVideo.current.srcObject = undefined;
+            // }
 
-                socket.off("all users", onAllUsers);
+            socket.off("video-ff", onVideoOn);
+            socket.off("video-off", onVideoOff);
+            socket.off("audio-on", onAudioOn);
+            socket.off("audio-off", onAudioOff);
 
-                socket.off("user joined", onUserJoined);
+            socket.off("all users", onAllUsers);
 
-                socket.off("receiving returned signal", onReceiveReturn);
+            socket.off("user joined", onUserJoined);
 
-                socket.off("user left", onUserLeft);
+            socket.off("receiving returned signal", onReceiveReturn);
 
-                // setStream(undefined);
-            }
+            socket.off("user left", onUserLeft);
         };
     }, [stream]);
 
-    useEffect(() => {
-        console.log({ peers });
-    }, [peers]);
+    // useEffect(() => {
+    //     console.log({ peers });
+    // }, [peers]);
 
-    useEffect(() => {
-        console.log({ stream });
-    }, [stream]);
+    // useEffect(() => {
+    //     console.log({ stream });
+    // }, [stream]);
 
-    useEffect(() => {
-        console.log({ videoOn });
-    }, [videoOn]);
+    // useEffect(() => {
+    //     console.log({ videoOn });
+    // }, [videoOn]);
 
     function createPeer(userToSignal, callerID, stream) {
         const peerObject = {

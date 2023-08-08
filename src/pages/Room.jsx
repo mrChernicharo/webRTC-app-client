@@ -1,10 +1,10 @@
+import { useContext, useEffect } from "react";
 import { useWebRTC } from "../useWebRTC";
 import Chat from "../components/large/Chat";
 import Controls from "../components/large/Controls";
 import { UserVideo, PeerVideo } from "../components/small/Video";
 import UseChat from "../useChat";
 import { UserContext } from "../UserContext";
-import { useContext } from "react";
 import Modal from "../components/small/Modal";
 import UsernameInput from "../components/small/UsernameInput";
 

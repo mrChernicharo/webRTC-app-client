@@ -86,7 +86,7 @@ function Controls({ onChange, toggleChat, hasNewMsgs }) {
                 <MenuButton
                     Icon={<FaPowerOff size={24} />}
                     className="bg-red-500 hover:bg-red-600 text-white font-bold"
-                    onClick={() => navigateTo("/create")}
+                    onClick={() => navigateTo("/")}
                 />
             </div>
 
